@@ -18,8 +18,8 @@ from typing import Any, Dict, List, Optional
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from benchmark.session import Message
-from benchmark.session import Session
+from recall_space_benchmarks.session import Message
+from recall_space_benchmarks.session import Session
 logger = logging.getLogger()
 
 

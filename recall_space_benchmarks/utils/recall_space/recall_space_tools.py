@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from agent_builder.builders.tool_builder import ToolBuilder
-from benchmark.utils.recall_space.memory_engine_connector import MemoryEngineConnector
+from recall_space_benchmarks.utils.recall_space.memory_engine_connector import MemoryEngineConnector
 import requests
 from textwrap import dedent
 

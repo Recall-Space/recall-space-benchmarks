@@ -1,6 +1,6 @@
 import os
 from agent_builder.builders.agent_builder import AgentBuilder
-from benchmark.utils.recall_space.recall_space_tools import (
+from recall_space_benchmarks.utils.recall_space.recall_space_tools import (
     cognitive_encoder_tool,
     cognitive_recaller_tool,
 )

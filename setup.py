@@ -16,10 +16,10 @@ setup(
     include_package_data=True,
     install_requires=[
         "pymongo==4.10.1",
-        "langchain-cohere==0.3.1",
-        "langchain-mistralai==0.2.1",
-        "langchain-community==0.3.2",
-        "agent-builder==0.0.1"
+        "langchain-cohere",
+        "langchain-mistralai",
+        "langchain-community",
+        "agent-builder"
     ],
     test_suite="tests",
     classifiers=[

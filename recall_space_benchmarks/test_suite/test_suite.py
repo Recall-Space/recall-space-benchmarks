@@ -1,7 +1,7 @@
 from textwrap import dedent
-from benchmark.session import Session
+from recall_space_benchmarks.session import Session
 try:
-    from benchmark.utils.recall_space.memory_engine_connector import MemoryEngineConnector
+    from recall_space_benchmarks.utils.recall_space.memory_engine_connector import MemoryEngineConnector
 except ImportError:
     import warnings
     warnings.warn("MemoryEngineConnector not available. Using Recall Space AI Brain wont be possible.")
