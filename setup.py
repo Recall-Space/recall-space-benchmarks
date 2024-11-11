@@ -26,7 +26,6 @@ setup(
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
-        "License :: OSI Approved :: Closed sourceLicense",
         "Programming Language :: Python :: 3.10",
     ],
 )
