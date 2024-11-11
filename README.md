@@ -18,7 +18,7 @@ The **Recall Space Benchmark** is carefully designed to test the ability of LLM 
 
 + Use the `LangChainSession` as a wrapper around any LangChain object that implements the `invoke` method. LangChainSession is a class that stores the state of the conversation.
 
-:::mermaid
+```mermaid
 classDiagram
     class LangChainSession {
         +string user_name
@@ -41,7 +41,7 @@ classDiagram
         +Message(sender: string, content: string)
         +to_dict(is_agent: bool)
     }
-:::
+```
 
 ## LangChainSession with Azure Open AI (No backend).
 
