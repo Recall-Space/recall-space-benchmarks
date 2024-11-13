@@ -96,7 +96,7 @@ tested_llm = AzureChatOpenAI(
         streaming=False,
     )
 
-# Setup Mongo Backend
+# Setup Mongo Backend (Optional)
 mongo_connector = MongoConnector(
     db_name=os.getenv("MONGO_DB_NAME"),
     collection_name=os.getenv("MONGO_COLLECTION"),
