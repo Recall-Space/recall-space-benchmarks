@@ -24,6 +24,8 @@ class Colors:
             "Magenta", "Lime", "Indigo", "Violet", "Teal", "Maroon",
             "Navy", "Olive"
         ]
+        # get a sample with no duplicates
+        sample_colors = random.sample(colors, self.total_questions)
 
         sentences = [
             "I love the color {color} the most.",
@@ -37,8 +39,7 @@ class Colors:
         favorite_colors = []
 
         # Generate favorite color messages
-        for _ in range(self.total_questions):
-            color = random.choice(colors)
+        for color in sample_colors:
             sentence = random.choice(sentences).format(color=color)
             sample_messages.append(sentence)
             favorite_colors.append(color)

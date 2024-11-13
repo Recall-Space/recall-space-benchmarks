@@ -6,7 +6,6 @@ We also added timestamp.
 """
 
 from textwrap import dedent
-import datetime
 
 
 class Message:
@@ -16,29 +15,24 @@ class Message:
     Attributes:
         sender (str): The sender of the message.
         content (str): The content of the message.
-        timestamp (datetime): The timestamp of the message.
     """
 
-    def __init__(self, sender: str, content: str, timestamp=None):
+    def __init__(self, sender: str, content: str):
         """
         Initializes a message with sender, content, and timestamp.
 
         Args:
             sender (str): The sender of the message, either assistant or user.
             content (str): The content of the message.
-            timestamp (datetime, optional): The timestamp of the message. Defaults to current time.
         """
         self.sender = sender
         self.content = content
-        self.timestamp = timestamp or datetime.datetime.now(datetime.timezone.utc)
 
     def to_str(self):
         return dedent(f"""
         # user name: {self.sender}
         ### content:
             {self.content}
-        ### timestamp: 
-            {self.timestamp}
         """)
 
 
@@ -57,6 +51,5 @@ class Message:
         return {
             "sender": self.sender,
             "role": role,
-            "content": self.content,
-            "timestamp": self.timestamp,
+            "content": self.content
         }

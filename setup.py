@@ -6,7 +6,7 @@ from setuptools import find_namespace_packages, setup
 
 setup(
     name="recall-space-benchmarks",
-    version="0.0.2",
+    version="0.0.4",
     author="Recall Space",
     author_email="info@recall.space",  
     description="The benchmark package allows you to test AI Brain",
@@ -15,11 +15,8 @@ setup(
     zip_safe=False,
     include_package_data=True,
     install_requires=[
-        "pymongo==4.10.1",
-        "langchain-cohere",
-        "langchain-mistralai",
-        "langchain-community",
-        "agent-builder"
+        "pymongo<5.0.0",
+        "langchain-openai<1.0.0"
     ],
     test_suite="tests",
     classifiers=[

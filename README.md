@@ -5,14 +5,14 @@
 
 | Environment | Version |
 | ----------- | ------- |
-| Production  | 0.0.1   |
-| Development | 0.0.1   |
+| Production  | 0.0.4   |
+| Development | 0.0.4   |
 
 
 # 🧠Recall Space Benchmark
 
-The **Recall Space Benchmark** is carefully designed to test the ability of LLM based application to retain state "remember" from past interactions.
-
++ The **Recall Space Benchmark** is carefully designed to test the ability of LLM based application to retain state "remember" from past interactions.
++ These benchmarks are inspired by the Good AI Benchmarks, which can be found at 🎊 [GoodAI GitHub](https://github.com/GoodAI/goodai-ltm-benchmark). Big thanks for their efforts.
 
 # 💬LangChainSession
 
@@ -74,111 +74,68 @@ session.send_message(sender=user_name, content="hi again!")
 session.send_message(sender=user_name, content="What is the capital of Germany?")
 ```
 
-# 💫Recall Space
-+ To request early access to the AI Brain, please email `info@recall.space`.
-+ Don't worry; you can still use this package even if you do not have access to Recall Space products, just make
-sure not to activate brain features e.g. `ai_brain_flag=True`.
+## LangChainSession with TestSuite.
 
-## LangChainSession with Recall Space AI Brain Powered agent.
-+ Here we used MongoDB to persist the state of the chat session.
-+ We also used the AI Brain service from Recall Space. 
-
-```python
-from recall_space_benchmarks.utils.mongo_connector import MongoConnector
-import os
-# Currently, the only connector that is available is Mongo.
-# To run a local instance of mongo, you could use docker
-# docker 
-#   run -d --name mongodb-container -p 27017:27017 -v ~/mongo-data:/data/db mongo
-
-mongo_connector = MongoConnector(
-    db_name="playground",
-    collection_name="sessions_and_chats",
-    uri="mongodb://localhost:27017")
-```
-
-+ Create a LangChainSession with a Recall Space AI Brain powered agent.
-
-
-```python
-from recall_space_benchmarks.session.langchain_session import LangChainSession
-from recall_space_benchmarks.utils.recall_space.recall_space_agent import agent_factory
-from recall_space_benchmarks.utils.recall_space.models_map import models_map
-
-user_name = "Developer"
-sample_agent = agent_factory(
-    llm_object=models_map["gpt-4o"],
-    ai_brain_flag=True)
-agent_name = "Sample Agent"
-
-# set db_handler=None if no backend is required.
-session = LangChainSession(
-    user_name=user_name, 
-    agent_name=agent_name,
-    agent=sample_agent,
-    db_handler=mongo_connector,
-    session_name="Test with Recall Space Agent")
-
-
-session.send_message(sender=user_name, content="hi again!")
-
-# Recall Space agent should reply -> Hello, how may I help you.
-session.send_message(sender=user_name, content="What is the capital of Germany?")
-# Recall Space agent should reply -> Berlin
-
-# Save the session to the backend
-session.save_session()
-
-# Get the messages from the backend
-session.get_session_messages()
-
-# Delete the session
-session.delete_session()
-```
-
-## LangChainSession with Recall Space TestSuite.
-
-+ Run the **colors** benchmark on our Recall Space Agents with the AI Brain enabled.
++ Run the **colors** benchmark on Agents or LLMs from Langchain.
 + Currently, the only other benchmark available is **jokes**. We will add more benchmarks gradually.
-+ These benchmarks are inspired by the Good AI Benchmarks, which can be found at https://github.com/GoodAI/goodai-ltm-benchmark.
 
 ```python
 import os
 from recall_space_benchmarks.test_suite import TestSuite
 from recall_space_benchmarks.utils.mongo_connector import MongoConnector
 from recall_space_benchmarks.session.langchain_session import LangChainSession
-from recall_space_benchmarks.utils.recall_space.recall_space_agent import agent_factory
-from recall_space_benchmarks.utils.recall_space.models_map import models_map
 from recall_space_benchmarks.test_suite.tests import Colors
+from langchain_openai import AzureChatOpenAI
 
+# Setup LLM or Agent with LangChain.
+llm_name = "gpt-4o"
+tested_llm = AzureChatOpenAI(
+        base_url=os.getenv("AZURE_GPT4O_BASE_URL"),
+        api_key=os.getenv("AZURE_GPT4O_KEY"),
+        api_version=os.getenv("AZURE_GPT4O_API_VERSION"),
+        streaming=False,
+    )
+
+# Setup Mongo Backend
 mongo_connector = MongoConnector(
     db_name=os.getenv("MONGO_DB_NAME"),
     collection_name=os.getenv("MONGO_COLLECTION"),
     uri=os.getenv("MONGO_DB_CONNECTION_STRING"))
 
+# Create Langchain Session.
 user_name = "Developer G"
-sample_agent = agent_factory(
-    llm_object=models_map["gpt-4o"],
-    ai_brain_flag=True)
-agent_name = "gpt-4o-ai-brain"
-
 session = LangChainSession(
+    agent_name=llm_name,
+    agent=tested_llm,
     user_name=user_name, 
-    agent_name=agent_name,
-    agent=sample_agent,
     db_handler=mongo_connector,
     session_name=f"Assesment Colors")
 
-colors = Colors(total_questions=2,total_assessments=1)
+# Configure the test.
+# Provide a set of facts to the agent, with varying validity 
+# over the course of the conversation.
+# Make 4 knowledge checks to see if the agent remembers.
+colors = Colors(total_questions=6,total_assessments=4)
 
-llm_judge = models_map["gpt-4o-mini"]
+# Another LLM to check the results of the tests.
+llm_judge = AzureChatOpenAI(
+        base_url=os.getenv("AZURE_GPT4O_MINI_BASE_URL"),
+        api_key=os.getenv("AZURE_GPT4O_MINI_KEY"),
+        api_version=os.getenv("AZURE_GPT4O_MINI_API_VERSION"),
+        streaming=False,
+    )
 
+# Configure the test object.
 test_suite = TestSuite(
     session=session, 
     tests=[colors],
-    include_chat_history=True,
-    reset_memory_engine=True,
+    include_chat_history=False,
     llm_judge=llm_judge)
 
+# Run the test.
+# NOTE: During the conversation setup, the chat history is passed under 
+# the key "chat_history".
+# During assessment, the parameter include_chat_history controls whether 
+# the chat history is passed.
 test_suite.run_test("Colors")
 ```

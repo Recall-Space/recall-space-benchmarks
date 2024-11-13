@@ -30,33 +30,26 @@ class Jokes:
             "I used to play piano by ear, but now I use my hands.",
             "What do you call fake spaghetti? An impasta!"
         ]
-
-        sample_jokes = []
-        #joke_times = []
+        # get a sample with no duplicates
+        sample_jokes = random.sample(jokes, self.total_questions)
 
         # Generate jokes with timestamps
         start_time = datetime.now(timezone.utc)
-        for i in range(self.total_questions):
-            joke = random.choice(jokes)
-            sample_jokes.append(joke)
-            #joke_time = start_time + timedelta(minutes=i)  # Increment time by minutes
-            #joke_times.append(joke_time)
-            # The last joke to be appended, should mark a close time
-            # to for then the first joke will be told to the user.
-            if i == self.total_questions-1:
+        is_there_joke_golf = "no"
+        for i, joke in enumerate(sample_jokes):
+            # The last joke to be appended should mark a close time
+            # to when the first joke will be told to the user.
+            if i == self.total_questions - 1:
                 last_joke_approx_timestamp = datetime.now(timezone.utc)
                 last_joke = joke
                 first_joke = sample_jokes[0]
-
-            is_there_joke_golf = "no"
             if "golf" in joke:
                 is_there_joke_golf = "yes"
 
-
         assessment_choices = [
-            (f"How many jokes have I told you since {start_time}.", f"I have told you: {str(self.total_questions)} jokes"),
-            (f"What joke, did I told you at around {last_joke_approx_timestamp}", first_joke),
-            (f"Did I told you a joke about golf between now and {start_time}?", is_there_joke_golf),
+            (f"How many jokes have I told you since {start_time}?", f"I have told you: {str(self.total_questions)} jokes"),
+            (f"What joke did I tell you at around {last_joke_approx_timestamp}?", first_joke),
+            (f"Did I tell you a joke about golf between now and {start_time}?", is_there_joke_golf),
             (f"What is the most recent joke I have told you?", last_joke),
         ]
 

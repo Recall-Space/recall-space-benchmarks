@@ -82,16 +82,27 @@ class LangChainSession(Session):
         sender_message = Message(sender, content)
         sender_message_dict = sender_message.to_dict()
         self.list_messages.append(sender_message_dict)
+        include_chat_history_in_msg_schema  = False
         if ("chat_history" in inspect.signature(self.agent.invoke).parameters):
             keywords["chat_history"] = []
             if include_chat_history is True:
                 keywords["chat_history"]= self.list_messages_with_schema
+        else:
+            if include_chat_history is True:
+                include_chat_history_in_msg_schema = True
 
         if sender == self.user_name:
             logger.info(sender_message.to_str())
-            agent_raw_response = self.agent.invoke(
-                input=sender_message.to_str(), **keywords
-            )
+            if include_chat_history_in_msg_schema is False:
+                agent_raw_response = self.agent.invoke(
+                    input=sender_message.to_str(), **keywords
+                )
+            else:
+                temp_chat = self.list_messages_with_schema + [self.to_langchain_schema(sender_message_dict)]
+                agent_raw_response = self.agent.invoke(
+                    input=temp_chat, **keywords
+                    )
+
             if isinstance(agent_raw_response, AIMessage):
                 agent_response = agent_raw_response.content
             else:
