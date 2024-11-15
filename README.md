@@ -8,6 +8,9 @@
 | Production  | 0.0.4   |
 | Development | 0.0.4   |
 
+```
+pip install recall-space-benchmarks
+```
 
 # 🧠Recall Space Benchmark
 
